@@ -2,13 +2,35 @@ FROM ubuntu:14.04
 MAINTAINER Steve Kamerman <stevekamerman@gmail.com>
 LABEL Description="Rsyslog Container"
 
+ENV DEBIAN_FRONTEND noninteractive
+ENV RSYSLOG_VERSION 8.9.0
+
+# Prepare to install packages
+RUN apt-get -q update && apt-get -qy install \
+    python-software-properties \
+    software-properties-common
+
+# Install rsyslog
+RUN add-apt-repository -y ppa:adiscon/v8-stable
+RUN apt-get -q update && apt-get -qy install \
+    rsyslog=${RSYSLOG_VERSION}*
+
+# Cleanup packages
+RUN apt-get -qy remove --purge \
+    python-software-properties \
+    software-properties-common && \
+    apt-get -qy autoremove && \
+    apt-get clean
+
 COPY resources/rsyslog.conf /etc/rsyslog.conf
+COPY resources/50-default.conf /etc/rsyslog.d/50-default.conf
 
 # Automatically mount this on your other containers with --volumes-from
+# There's a logging socket at /var/log/socket that you can symlink to /dev/log
 VOLUME /var/log
 
 # Or you can send your log data here with TCP or UDP
-EXPOSE 514
-EXPOSE 514/udp
+EXPOSE 514/tcp 514/udp
 
 CMD ["/usr/sbin/rsyslogd", "-n"]
+
