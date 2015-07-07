@@ -3,7 +3,6 @@ MAINTAINER Steve Kamerman <stevekamerman@gmail.com>
 LABEL Description="Rsyslog Container"
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV RSYSLOG_VERSION 8.9.0
 
 RUN apt-get -q update && apt-get -qy install \
         python-software-properties \
@@ -11,7 +10,7 @@ RUN apt-get -q update && apt-get -qy install \
     \
     && add-apt-repository -y ppa:adiscon/v8-stable \
     && apt-get -q update && apt-get -qy install \
-        rsyslog=${RSYSLOG_VERSION}* \
+        rsyslog \
     \
     && apt-get -qy remove --purge \
         python-software-properties \
