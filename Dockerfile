@@ -27,5 +27,5 @@ VOLUME /var/log
 # Or you can send your log data here with TCP or UDP
 EXPOSE 514/tcp 514/udp
 
-CMD ["/usr/sbin/rsyslogd", "-n"]
+CMD ["/usr/sbin/rsyslogd", "-n", "-i", "/tmp/rsyslog.pid"]
 
